@@ -49,7 +49,12 @@ class FactoriesFinder {
         $directoryIterator = new RecursiveDirectoryIterator($this->basePath);
         $directoryIterator->setFlags(RecursiveDirectoryIterator::SKIP_DOTS);
 
-        return new RecursiveIteratorIterator($directoryIterator);
+        $filterIterator = FactoriesFilterIterator::createWithFilters(
+            $directoryIterator,
+            Factory::getExclusionFilters()
+        );
+
+        return new RecursiveIteratorIterator($filterIterator, RecursiveIteratorIterator::SELF_FIRST);
     }
 
 }

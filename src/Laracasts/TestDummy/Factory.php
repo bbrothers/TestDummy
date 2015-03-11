@@ -12,6 +12,13 @@ class Factory {
     public static $factoriesPath = 'tests/factories';
 
     /**
+     * Exclude files from the factories path.
+     *
+     * @var array
+     */
+    private static $excludeByRegex = ['__MACOSX', '^\.'];
+
+    /**
      * The user registered factories.
      *
      * @var array
@@ -130,6 +137,78 @@ class Factory {
         {
             static::$databaseProvider = $provider ?: new EloquentDatabaseProvider;
         }
+    }
+
+    /**
+     * Get exclusion rules.
+     *
+     * @return array
+     */
+    public static function getExclusionFilters()
+    {
+
+        return self::$excludeByRegex;
+    }
+
+    /**
+     * Add an exclusion rule.
+     *
+     * @param $exclude
+     */
+    public static function addExclusionFilter($exclude)
+    {
+
+        $exclude = self::parseExclusionRules($exclude);
+
+        static::$excludeByRegex = array_merge(static::$excludeByRegex, $exclude);
+    }
+
+    /**
+     * Override all exclusion rules.
+     *
+     * @param $exclude
+     */
+    public static function setExclusionFilters($exclude)
+    {
+
+        $exclude = self::parseExclusionRules($exclude);
+
+        static::$excludeByRegex = $exclude;
+    }
+
+    /**
+     * Parse input rules to an array.
+     *
+     * @param $exclude
+     * @return array
+     */
+    protected static function parseExclusionRules($exclude)
+    {
+
+        if (is_string($exclude))
+        {
+            $exclude = preg_split('/ ?, ?/', $exclude);
+        }
+
+        if (! self::assertIsTraversable($exclude)) {
+            throw new \InvalidArgumentException(
+                'Rules should be array accessible or comma separated string of rules.'
+            );
+        }
+
+        return (array) $exclude;
+    }
+
+    /**
+     * Assert a value is an array or Traversable
+     *
+     * @param $value
+     * @return bool
+     */
+    protected static function assertIsTraversable($value)
+    {
+
+        return is_array($value) or $value instanceof \Traversable;
     }
 
 }
