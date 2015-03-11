@@ -284,7 +284,9 @@ Easy. Before your tests run, add:
 Factory::$factoriesPath = 'app/tests/factories';
 ```
 
-Now, TestDummy will look for your registered factories in the `app/tests/factories` folder.
+Now, TestDummy will look for your registered factories in the `app/tests/factories` folder.  
+By default, `__MACOSX` and dotfiles (`.some_file`) are excluded. You can add filters or override the existing filters with the `Factory::addExclusionFilter` and
+    `Factory::setExclusionFilters` methods respectively.
 
 #### I want to control how my models are built and saved...
 
